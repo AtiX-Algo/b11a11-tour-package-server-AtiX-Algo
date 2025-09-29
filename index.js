@@ -18,7 +18,7 @@ app.use(express.json());
 
 // MongoDB Connection
 const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.wknmybf.mongodb.net/tourDB?retryWrites=true&w=majority&appName=Cluster0`;
-console.log("MongoDB URI:", uri); // 👈 Check if DB_USER and DB_PASS are correct
+// console.log("MongoDB URI:", uri); 
 
 const client = new MongoClient(uri, {
   serverApi: {
@@ -31,7 +31,7 @@ const client = new MongoClient(uri, {
 // JWT Verification Middleware
 const verifyToken = (req, res, next) => {
   const authHeader = req.headers.authorization;
-  console.log("Auth Header:", authHeader);
+  // console.log("Auth Header:", authHeader);
   if (!authHeader) return res.status(401).send({ message: 'unauthorized access' });
 
   const token = authHeader.split(' ')[1];
@@ -50,7 +50,7 @@ async function run() {
   try {
     console.log("Connecting to MongoDB...");
     await client.connect();
-    console.log("✅ Connected to MongoDB");
+    console.log(" Connected to MongoDB");
 
     const db = client.db("tourDB");
     const packagesCollection = db.collection("tourPackages");
@@ -66,7 +66,7 @@ async function run() {
         console.log("Generated JWT:", token);
         res.send({ token });
       } catch (err) {
-        console.error("❌ Error generating JWT:", err.message);
+        console.error(" Error generating JWT:", err.message);
         res.status(500).send({ error: err.message });
       }
     });
@@ -74,7 +74,7 @@ async function run() {
     // --- Users API ---
     app.post('/users', async (req, res) => {
       const user = req.body;
-      console.log("📩 New user request:", user);
+      console.log(" New user request:", user);
       try {
         const query = { email: user.email };
         const existingUser = await usersCollection.findOne(query);
@@ -85,10 +85,10 @@ async function run() {
           ...user,
           role: 'user'
         });
-        console.log('✅ User inserted with _id:', result.insertedId);
+        // console.log(' User inserted with _id:', result.insertedId);
         res.send(result);
       } catch (err) {
-        console.error("❌ Error inserting user:", err.message);
+        console.error(" Error inserting user:", err.message);
         res.status(500).send({ error: err.message });
       }
     });
@@ -113,7 +113,7 @@ async function run() {
           res.status(404).send({ message: 'User not found' });
         }
       } catch (err) {
-        console.error("❌ Error fetching user role:", err.message);
+        console.error(" Error fetching user role:", err.message);
         res.status(500).send({ error: err.message });
       }
     });
@@ -126,7 +126,7 @@ async function run() {
         const result = await packagesCollection.find().limit(6).toArray();
         res.send(result);
       } catch (err) {
-        console.error("❌ Error fetching featured packages:", err.message);
+        console.error(" Error fetching featured packages:", err.message);
         res.status(500).send({ error: err.message });
       }
     });
@@ -149,7 +149,7 @@ async function run() {
         const result = await packagesCollection.find(query).toArray();
         res.send(result);
       } catch (err) {
-        console.error("❌ Error fetching all packages:", err.message);
+        console.error(" Error fetching all packages:", err.message);
         res.status(500).send({ error: err.message });
       }
     });
@@ -167,14 +167,14 @@ async function run() {
 
     // POST: Add a new package
     app.post('/packages', verifyToken, async (req, res) => {
-      console.log("📦 New package request:", req.body);
+      // console.log(" New package request:", req.body); 
       try {
         const packageData = req.body;
         const result = await packagesCollection.insertOne(packageData);
-        console.log("✅ Package inserted with _id:", result.insertedId);
+        console.log(" Package inserted with _id:", result.insertedId);
         res.send(result);
       } catch (err) {
-        console.error("❌ Error inserting package:", err.message);
+        console.error(" Error inserting package:", err.message);
         res.status(500).send({ error: err.message });
       }
     });
@@ -211,12 +211,12 @@ async function run() {
 
     // BOOKINGS: Add a booking
     app.post('/bookings', verifyToken, async (req, res) => {
-    console.log("📑 New booking request:", req.body);
+    // console.log(" New booking request:", req.body);
     try {
         const booking = req.body;
 
         const bookingResult = await bookingsCollection.insertOne(booking);
-        console.log("✅ Booking inserted with _id:", bookingResult.insertedId);
+        console.log(" Booking inserted with _id:", bookingResult.insertedId);
 
         // Logic to increment the booking count on the package
         const packageQuery = { _id: new ObjectId(booking.tour_id) };
@@ -231,7 +231,7 @@ async function run() {
         res.send({ bookingResult });
 
     } catch (err) {
-        console.error("❌ Error inserting booking:", err.message);
+        // console.error(" Error inserting booking:", err.message);
         res.status(500).send({ error: err.message });
     }
 });
@@ -264,7 +264,7 @@ async function run() {
     });
 
   } catch (err) {
-    console.error("❌ Error during setup:", err.message);
+    console.error(" Error during setup:", err.message);
   }
 }
 
@@ -277,5 +277,5 @@ app.get('/', (req, res) => {
 });
 
 app.listen(port, () => {
-  console.log(`🚀 Server is running on port: ${port}`);
+  console.log(` Server is running on port: ${port}`);
 });
