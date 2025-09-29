@@ -11,7 +11,7 @@ const port = process.env.PORT || 5000;
 
 // Middleware
 app.use(cors({
-  origin: ['http://localhost:5173', 'https://your-live-client-site.web.app'],
+  origin: ['http://localhost:5173', 'https://the-vagabond-tour.web.app/login'],
   credentials: true
 }));
 app.use(express.json());
